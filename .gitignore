@@ -134,3 +134,4 @@ NPOPlayer.db
 NPOPlayer
 NER.pkl
 NER.gzip
+NER.csv
