@@ -133,4 +133,4 @@ data/
 NPOPlayer.db
 NPOPlayer
 NER.pkl
-NER
+NER.gzip
