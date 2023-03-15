@@ -132,3 +132,5 @@ data/
 /data/
 NPOPlayer.db
 NPOPlayer
+NER.pkl
+NER
