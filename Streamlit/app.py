@@ -7,6 +7,7 @@ from itertools import cycle
 from random import random
 
 st.set_page_config(layout="wide")
+df_NPO = pd.read_csv("NPOPlayer.csv", sep=";")
 
 # the simpsons episodes
 df = pd.read_json('episodes.json')
@@ -30,6 +31,9 @@ if 'user' not in st.session_state:
 if 'activities' not in st.session_state:
     st.session_state['activities'] = users_activities
 
+if 'mediaID' not in st.session_state:
+    st.session_state['mediaID'] = 'POMS_AT_3975232'
+
 #authenticate
 a.authenticate()
 
@@ -38,23 +42,24 @@ seasons = pd.unique(df['season'].sort_values(ascending=True))
 
 # retrieve season and episode from session state
 df_season = df[df['season'] == st.session_state['season']]
-df_episode = df[df['id'] == st.session_state['episode']]
-df_episode = df_episode.iloc[0]
+#df_episode = df[df['id'] == st.session_state['episode']]
+print(df_NPO['mediaID'])
+df_episode = df_NPO[df_NPO['mediaID'] == st.session_state['mediaID']]
+#df_episode = df_episode.iloc[0]
 
 col1, col2 = st.columns(2)
-
 with col1:
-    st.image(df_episode['image'], use_column_width='always')
+    st.image(str(df_episode['thumbnail'].values[0]), use_column_width='always',output_format="JPEG")
 
 with col2:
-    st.title(df_episode['title'])
-    st.caption(df_episode['airdate'])
-    st.markdown(df_episode['summary'])
-    st.caption('Season ' + str(df_episode['season']) + ' | episode ' + str(df_episode['episode']) + ' | Rating ' + str(df_episode['rating']) + ' | ' + str(df_episode['votes']) + ' votes')
+    st.title(df_episode['mainTitle'].values[0])
+    st.caption(df_episode['broadcaster'].values[0])
+    st.markdown(df_episode['longSummary'].values[0])
+    st.caption('Season ' + str(df_episode['subTitle'].values[0]) + ' | episode ' + str(df_episode['subTitle'].values[0]) + ' | Rating ' + str(df_episode['subTitle'].values[0]) + ' | ' + str(df_episode['subTitle'].values[0]) + ' votes')
 
 with st.expander('Implicit and Explicit feedback'):
-    st.button('👍', key=random(), on_click=t.activity, args=(df_episode['id'], 'Like' ))    
-    st.button('👎', key=random(), on_click=t.activity, args=(df_episode['id'], 'Dislike'))    
+    st.button('👍', key=random(), on_click=t.activity, args=(df_episode['mediaID'], 'Like' ))    
+    st.button('👎', key=random(), on_click=t.activity, args=(df_episode['mediaID'], 'Dislike'))    
 
 with st.expander("Seasons"):
     cols = cycle(st.columns(14))
@@ -63,3 +68,4 @@ with st.expander("Seasons"):
 
 with st.expander("Random episodes in this season"):
     t.tiles(df_season.sample(6))
+
