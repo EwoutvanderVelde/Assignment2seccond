@@ -5,6 +5,7 @@ import authenticate as a
 import json
 from itertools import cycle
 from random import random
+import liveCalc as LC
 
 st.set_page_config(layout="wide")
 df_NPO = pd.read_csv("NPOPlayer.csv", sep=";")
@@ -55,16 +56,11 @@ with col2:
     st.title(df_episode['mainTitle'].values[0])
     st.caption(df_episode['broadcaster'].values[0])
     st.markdown(df_episode['longSummary'].values[0])
-    st.caption('Season ' + str(df_episode['subTitle'].values[0]) + ' | episode ' + str(df_episode['subTitle'].values[0]) + ' | Rating ' + str(df_episode['subTitle'].values[0]) + ' | ' + str(df_episode['subTitle'].values[0]) + ' votes')
+    st.caption('Season ' + str(df_episode['subTitle'].values[0]) + ' | episode ' + str(df_episode['subTitle'].values[0]) + ' | Recomendations: ' + str(LC.get_top_k_ner_jacqard(df_NPO, st.session_state["mediaID"])['mediaID']))
 
 with st.expander('Implicit and Explicit feedback'):
     st.button('👍', key=random(), on_click=t.activity, args=(df_episode['mediaID'], 'Like' ))    
     st.button('👎', key=random(), on_click=t.activity, args=(df_episode['mediaID'], 'Dislike'))    
-
-with st.expander("Seasons"):
-    cols = cycle(st.columns(14))
-    for season in seasons:
-        next(cols).button(str(season), key=season, on_click=t.select_season, args=(season, ))
 
 with st.expander("Random episodes in this season"):
     t.tiles(df_season.sample(6))
