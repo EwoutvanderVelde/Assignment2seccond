@@ -11,7 +11,7 @@ import numpy as np
 st.set_page_config(layout="wide")
 df_NPO = pd.read_csv("NPOPlayer.csv", sep=";")
 df_NPO[df_NPO["thumbnail"].isna()] = "no-image.png"
-
+df_NPO[df_NPO["longSummary"].isna()] = ""
 # the simpsons episodes
 df = pd.read_json('episodes.json')
 
@@ -29,7 +29,7 @@ if 'episode' not in st.session_state:
     st.session_state['episode'] = 'tt0348034'
 
 if 'user' not in st.session_state:
-    st.session_state['user'] = 0
+    st.session_state['user'] = LC.generate_random_userID(10)
 
 if 'activities' not in st.session_state:
     st.session_state['activities'] = users_activities
@@ -37,8 +37,9 @@ if 'activities' not in st.session_state:
 if 'mediaID' not in st.session_state:
     st.session_state['mediaID'] = 'WO_POWN_8513746'
 
+print(st.session_state['user'])
 #authenticate
-a.authenticate()
+#a.authenticate()
 
 # get seasons
 seasons = pd.unique(df['season'].sort_values(ascending=True))
@@ -46,7 +47,7 @@ seasons = pd.unique(df['season'].sort_values(ascending=True))
 # retrieve season and episode from session state
 df_season = df[df['season'] == st.session_state['season']]
 #df_episode = df[df['id'] == st.session_state['episode']]
-print(df_NPO['mediaID'])
+#print(df_NPO['mediaID'])
 df_episode = df_NPO[df_NPO['mediaID'] == st.session_state['mediaID']]
 #df_episode = df_episode.iloc[0]
 
@@ -65,6 +66,5 @@ with st.expander('Implicit and Explicit feedback'):
     st.button('👎', key=random(), on_click=t.activity, args=(df_episode['mediaID'], 'Dislike'))    
 
 with st.expander("Jaccard Distance NER from this episode"):
-    #t.tiles(df_season.sample(6))
     t.tiles(LC.get_top_k_ner_jacqard(df_NPO, st.session_state['mediaID'], 6))
 
