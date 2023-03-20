@@ -6,7 +6,10 @@ import json
 from itertools import cycle
 from random import random
 import liveCalc as LC
+import searchResults as SR
 import numpy as np
+
+search_bar_placeholder_text = "zoeken"
 
 st.set_page_config(layout="wide")
 df_NPO = pd.read_csv("NPOPlayer.csv", sep=";")
@@ -22,12 +25,6 @@ with open('activities.json') as json_file:
     users_activities = json.load(json_file)
 
 # create a session state
-if 'season' not in st.session_state:
-    st.session_state['season'] = 1
-
-if 'episode' not in st.session_state:
-    st.session_state['episode'] = 'tt0348034'
-
 if 'user' not in st.session_state:
     st.session_state['user'] = LC.generate_random_userID(10)
 
@@ -37,33 +34,41 @@ if 'activities' not in st.session_state:
 if 'mediaID' not in st.session_state:
     st.session_state['mediaID'] = 'WO_POWN_8513746'
 
-print(st.session_state['user'])
-#authenticate
-#a.authenticate()
+if 'search' not in st.session_state:
+    st.session_state['search'] = search_bar_placeholder_text
 
-# get seasons
-seasons = pd.unique(df['season'].sort_values(ascending=True))
+# # uncommenten en dan kunnen we als we willen authenticatie weer aanzetten 
+# authenticate
+# a.authenticate()
 
-# retrieve season and episode from session state
-df_season = df[df['season'] == st.session_state['season']]
-#df_episode = df[df['id'] == st.session_state['episode']]
-#print(df_NPO['mediaID'])
-df_episode = df_NPO[df_NPO['mediaID'] == st.session_state['mediaID']]
-#df_episode = df_episode.iloc[0]
+# retrieve mediaID from session state
+df_selected_mediaID = df_NPO[df_NPO['mediaID'] == st.session_state['mediaID']]
+
+################################################
+# Shown on page:
+################################################
+
+userseach = st.text_input('Movie title', search_bar_placeholder_text)
 
 col1, col2 = st.columns(2)
 with col1:
-    st.image(str(df_episode['thumbnail'].values[0]), use_column_width='always',output_format="JPEG")
+    st.image(str(df_selected_mediaID['thumbnail'].values[0]), use_column_width='always',output_format="JPEG")
 
 with col2:
-    st.title(df_episode['mainTitle'].values[0])
-    st.caption(df_episode['broadcaster'].values[0])
-    st.markdown(df_episode['longSummary'].values[0])
-    st.caption('Season ' + str(df_episode['subTitle'].values[0]) + ' | episode ' + str(df_episode['subTitle'].values[0]) + ' | Recomendations: ' + str(LC.get_top_k_ner_jacqard(df_NPO, st.session_state["mediaID"])['mediaID']))
+    st.title(df_selected_mediaID['mainTitle'].values[0])
+    st.caption(df_selected_mediaID['broadcaster'].values[0])
+    st.markdown(df_selected_mediaID['longSummary'].values[0])
+    st.caption('Season ' + str(df_selected_mediaID['subTitle'].values[0]) + ' | episode ' + str(df_selected_mediaID['subTitle'].values[0]) + ' | Recomendations: ' + str(LC.get_top_k_ner_jacqard(df_NPO, st.session_state["mediaID"])['mediaID']))
+
+if(userseach != search_bar_placeholder_text and userseach != ""):
+    with st.expander("search", expanded=True):
+        t.tiles(SR.get_search_result(df_NPO ,userseach, 5))
+
+
 
 with st.expander('Implicit and Explicit feedback'):
-    st.button('👍', key=random(), on_click=t.activity, args=(df_episode['mediaID'].values[0], 'Like' ))    
-    st.button('👎', key=random(), on_click=t.activity, args=(df_episode['mediaID'].values[0], 'Dislike'))    
+    st.button('👍', key=random(), on_click=t.activity, args=(df_selected_mediaID['mediaID'].values[0], 'Like' ))    
+    st.button('👎', key=random(), on_click=t.activity, args=(df_selected_mediaID['mediaID'].values[0], 'Dislike'))    
 
 with st.expander("Jaccard Distance NER from this episode"):
     t.tiles(LC.get_top_k_ner_jacqard(df_NPO, st.session_state['mediaID'], 6))

@@ -22,13 +22,12 @@ def select_episode(e):
     st.session_state['mediaID'] = e
     activity(e, 'Select mediaID')
 
-def select_season(s):
-    st.session_state['season'] = s
-    activity(int(s), 'Select Season')
-
 def tile_item(column, item):
     with column:
-        st.image(item['thumbnail'], use_column_width='always')
+        try:
+            st.image(item['thumbnail'], use_column_width='always')
+        except st.runtime.media_file_storage.MediaFileStorageError:
+            st.image("no-image.png", use_column_width='always')
         st.markdown(item['mainTitle'])
         st.caption(item['longSummary'][:50] + (item['longSummary'][50:] and '..'))
         #st.caption('Season ' + str(item['season']) + ' | episode ' + str(item['episode']) + ' | Rating ' + str(item['rating']) + ' | ' + str(item['votes']) + ' votes')

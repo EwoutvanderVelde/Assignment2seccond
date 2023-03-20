@@ -10,7 +10,6 @@ def generate_random_userID(length):
     result_str = ''.join(random.choice(letters) for i in range(length))
     return result_str
 
-
 with open('miediaID_NERTags.json', 'r') as fp:
     media_tag_dict = json.load(fp)
 
@@ -23,11 +22,12 @@ def jaccard_distance(user_ids_isbn_a, user_ids_isbn_b):
     intersection = set_isbn_a.intersection(set_isbn_b)
         
     return len(intersection) / float(len(union))
+
 # code goes here
-def get_jaccard_distances(mediaID):
-    tags = media_tag_dict[mediaID]
+def get_jaccard_distances(mediaDict ,mediaID):
+    tags = mediaDict[mediaID]
     distancelist = []
-    for key, value in media_tag_dict.items():
+    for key, value in mediaDict.items():
         distance = jaccard_distance(tags ,value)
         distancelist.append([key, distance])
         
@@ -52,7 +52,7 @@ def remove_repeating_items(df:pd.DataFrame, max_iter:int)->pd.DataFrame:
 
 def get_top_k_ner_jacqard(df, mediaID, topk = 10, excludeBC=True, no_repeat=True)-> pd.DataFrame:
     broadcastExclude = df.query(f"mediaID == '{mediaID}'")["broadcaster"].values[0]
-    JSframe = (pd.DataFrame(get_jaccard_distances(mediaID), columns=['mediaID','JS']).sort_values(by='JS', ascending=False))
+    JSframe = (pd.DataFrame(get_jaccard_distances(media_tag_dict, mediaID), columns=['mediaID','JS']).sort_values(by='JS', ascending=False))
     result = pd.merge(left=JSframe, right=df, left_on='mediaID', right_on="mediaID", how="inner")
     print(result["JS"])
     if excludeBC:
