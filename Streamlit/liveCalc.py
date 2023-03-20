@@ -23,9 +23,10 @@ def get_jaccard_distances(mediaID):
         
     return distancelist
 
-def get_top_k_ner_jacqard(df, mediaID, topk = 10):
+def get_top_k_ner_jacqard(df, mediaID, topk = 10)-> pd.DataFrame:
     broadcastExclude = df.query(f"mediaID == '{mediaID}'")["broadcaster"].values[0]
     temp = (pd.DataFrame(get_jaccard_distances(mediaID), columns=['mediaID','JS']).sort_values(by='JS', ascending=False))
-    merged = pd.merge(left=temp, right=df[['mediaID', 'broadcaster']], left_on='mediaID', right_on="mediaID", how="inner")[['mediaID', 'JS', "broadcaster"]]
+    merged = pd.merge(left=temp, right=df, left_on='mediaID', right_on="mediaID", how="inner")
     return merged.query(f"broadcaster != '{broadcastExclude}'").head(topk)
 
+#def get_n_recommendation()

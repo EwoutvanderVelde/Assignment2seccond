@@ -18,21 +18,20 @@ def activity(id, activity):
 
 # set episode session state
 def select_episode(e):
-    st.session_state['episode'] = e
-    activity(e, 'Select Episode')
+    st.session_state['mediaID'] = e
+    activity(e, 'Select mediaID')
 
 def select_season(s):
     st.session_state['season'] = s
     activity(int(s), 'Select Season')
 
-
 def tile_item(column, item):
     with column:
-        st.image(item['image'], use_column_width='always')
-        st.markdown(item['title'])
-        st.caption(item['summary'][:50] + (item['summary'][50:] and '..'))
-        st.caption('Season ' + str(item['season']) + ' | episode ' + str(item['episode']) + ' | Rating ' + str(item['rating']) + ' | ' + str(item['votes']) + ' votes')
-        st.button('▶', key=random(), on_click=select_episode, args=(item['id'], ))
+        st.image(item['thumbnail'], use_column_width='always')
+        st.markdown(item['mainTitle'])
+        st.caption(item['longSummary'][:50] + (item['longSummary'][50:] and '..'))
+        #st.caption('Season ' + str(item['season']) + ' | episode ' + str(item['episode']) + ' | Rating ' + str(item['rating']) + ' | ' + str(item['votes']) + ' votes')
+        st.button('▶', key=random(), on_click=select_episode, args=(item['mediaID'], ))
 
 def tiles(df):
     # check the number of items
@@ -45,6 +44,5 @@ def tiles(df):
 
         # convert df rows to dict lists
         items = df.to_dict(orient='records')
-
         # apply tile_item to each column-item tuple (created with python 'zip')
         any(tile_item(x[0], x[1]) for x in zip(columns, items))

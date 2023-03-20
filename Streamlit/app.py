@@ -6,9 +6,11 @@ import json
 from itertools import cycle
 from random import random
 import liveCalc as LC
+import numpy as np
 
 st.set_page_config(layout="wide")
 df_NPO = pd.read_csv("NPOPlayer.csv", sep=";")
+df_NPO[df_NPO["thumbnail"].isna()] = "no-image.png"
 
 # the simpsons episodes
 df = pd.read_json('episodes.json')
@@ -33,7 +35,7 @@ if 'activities' not in st.session_state:
     st.session_state['activities'] = users_activities
 
 if 'mediaID' not in st.session_state:
-    st.session_state['mediaID'] = 'POMS_AT_3975232'
+    st.session_state['mediaID'] = 'WO_POWN_8513746'
 
 #authenticate
 a.authenticate()
@@ -62,6 +64,7 @@ with st.expander('Implicit and Explicit feedback'):
     st.button('👍', key=random(), on_click=t.activity, args=(df_episode['mediaID'], 'Like' ))    
     st.button('👎', key=random(), on_click=t.activity, args=(df_episode['mediaID'], 'Dislike'))    
 
-with st.expander("Random episodes in this season"):
-    t.tiles(df_season.sample(6))
+with st.expander("Jaccard Distance NER from this episode"):
+    #t.tiles(df_season.sample(6))
+    t.tiles(LC.get_top_k_ner_jacqard(df_NPO, st.session_state['mediaID'], 6))
 
