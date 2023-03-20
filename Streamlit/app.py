@@ -62,8 +62,8 @@ with col2:
     st.caption('Season ' + str(df_episode['subTitle'].values[0]) + ' | episode ' + str(df_episode['subTitle'].values[0]) + ' | Recomendations: ' + str(LC.get_top_k_ner_jacqard(df_NPO, st.session_state["mediaID"])['mediaID']))
 
 with st.expander('Implicit and Explicit feedback'):
-    st.button('👍', key=random(), on_click=t.activity, args=(df_episode['mediaID'], 'Like' ))    
-    st.button('👎', key=random(), on_click=t.activity, args=(df_episode['mediaID'], 'Dislike'))    
+    st.button('👍', key=random(), on_click=t.activity, args=(df_episode['mediaID'].values[0], 'Like' ))    
+    st.button('👎', key=random(), on_click=t.activity, args=(df_episode['mediaID'].values[0], 'Dislike'))    
 
 with st.expander("Jaccard Distance NER from this episode"):
     t.tiles(LC.get_top_k_ner_jacqard(df_NPO, st.session_state['mediaID'], 6))

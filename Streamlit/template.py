@@ -11,6 +11,7 @@ def save_activities():
 # function that processes an activity
 def activity(id, activity):
     data = {'content_id': id, 'activity': activity, 'user_id': st.session_state['user'], 'datetime': str(datetime.datetime.now())}
+    print(data)
     # add to the session state
     st.session_state['activities'].append(data)
     # directly save the activities
