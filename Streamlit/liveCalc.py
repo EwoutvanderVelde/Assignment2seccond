@@ -54,7 +54,6 @@ def get_top_k_ner_jacqard(df, mediaID, topk = 10, excludeBC=True, no_repeat=True
     broadcastExclude = df.query(f"mediaID == '{mediaID}'")["broadcaster"].values[0]
     JSframe = (pd.DataFrame(get_jaccard_distances(media_tag_dict, mediaID), columns=['mediaID','JS']).sort_values(by='JS', ascending=False))
     result = pd.merge(left=JSframe, right=df, left_on='mediaID', right_on="mediaID", how="inner")
-    print(result["JS"])
     if excludeBC:
         result.query(f"broadcaster != '{broadcastExclude}'", inplace=True)
     if no_repeat:
