@@ -37,6 +37,9 @@ if 'mediaID' not in st.session_state:
 if 'search' not in st.session_state:
     st.session_state['search'] = search_bar_placeholder_text
 
+if 'df_NPO' not in st.session_state:
+    st.session_state['df_NPO'] = df_NPO
+
 # # uncommenten en dan kunnen we als we willen authenticatie weer aanzetten 
 # authenticate
 # a.authenticate()
