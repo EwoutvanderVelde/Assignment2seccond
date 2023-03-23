@@ -48,13 +48,13 @@ def max_n_reccomendation_per_broadcaster(df:pd.DataFrame, max_n:int)->pd.DataFra
     return df_copy[df_copy["keep"]==True].drop(columns= ["keep"])  # Drop the keep column for consistency
 
 
-def get_top_k_ner_jacqard(df:pd.DataFrame, mediaID:str, topk:int=10, excludeBC=True, no_repeat=True)-> pd.DataFrame:
+def get_top_k_ner_jaccard(df:pd.DataFrame, mediaID:str, topk:int=10, exclude_current_broadcaster=True, no_repeat=True)-> pd.DataFrame:
     jaccard_similarity_list = get_jaccard_similarity_list(mediaID)
     jaccard_similarity_df = pd.DataFrame(jaccard_similarity_list, columns=['mediaID','jaccard_score']).sort_values(by='jaccard_score', ascending=False)
     df_merged_jaccard_score = pd.merge(left=jaccard_similarity_df, right=df, left_on='mediaID', right_on="mediaID", how="inner")
     
     # if we want to exclude recommendations for the broadcaster the user is already watching
-    if excludeBC:
+    if exclude_current_broadcaster:
         broadcaster_to_exclude = df.query(f"mediaID == '{mediaID}'")["broadcaster"].values[0]
         df_merged_jaccard_score.query(f"broadcaster != '{broadcaster_to_exclude}'", inplace=True)
     

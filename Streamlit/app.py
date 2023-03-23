@@ -16,7 +16,6 @@ df_NPO = pd.read_csv("NPOPlayer.csv", sep=";")
 df_NPO[df_NPO["thumbnail"].isna()] = "no-image.png"
 df_NPO[df_NPO["longSummary"].isna()] = ""
 # the simpsons episodes
-df = pd.read_json('episodes.json')
 
 df_users = pd.read_json('users.json')
 
@@ -61,7 +60,7 @@ with col2:
     st.title(df_selected_mediaID['mainTitle'].values[0])
     st.caption(df_selected_mediaID['broadcaster'].values[0])
     st.markdown(df_selected_mediaID['longSummary'].values[0])
-    st.caption('Season ' + str(df_selected_mediaID['subTitle'].values[0]) + ' | episode ' + str(df_selected_mediaID['subTitle'].values[0]) + ' | Recomendations: ' + str(LC.get_top_k_ner_jacqard(df_NPO, st.session_state["mediaID"])['mediaID']))
+    st.caption('Season ' + str(df_selected_mediaID['mediaID'].values[0]) + ' | episode ' + str(df_selected_mediaID['subTitle'].values[0]) + ' | Recomendations: ' + str(LC.get_top_k_ner_jaccard(df_NPO, st.session_state["mediaID"])['mediaID']))
 
 if(userseach != search_bar_placeholder_text and userseach != ""):
     with st.expander("search", expanded=True):
@@ -74,5 +73,5 @@ with st.expander('Implicit and Explicit feedback'):
     st.button('👎', key=random(), on_click=t.activity, args=(df_selected_mediaID['mediaID'].values[0], 'Dislike'))    
 
 with st.expander("Jaccard Distance NER from this episode"):
-    t.tiles(LC.get_top_k_ner_jacqard(df_NPO, st.session_state['mediaID'], 6))
+    t.tiles(LC.get_top_k_ner_jaccard(df_NPO, st.session_state['mediaID'], 6))
 

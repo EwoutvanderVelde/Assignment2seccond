@@ -30,6 +30,7 @@ def tile_item(column, item):
             st.image("no-image.png", use_column_width='always')
         st.markdown(item['mainTitle'])
         st.caption(item['longSummary'][:50] + (item['longSummary'][50:] and '..'))
+        
         #st.caption('Season ' + str(item['season']) + ' | episode ' + str(item['episode']) + ' | Rating ' + str(item['rating']) + ' | ' + str(item['votes']) + ' votes')
         st.button('▶', key=random(), on_click=select_episode, args=(item['mediaID'], ))
 
@@ -41,7 +42,6 @@ def tiles(df):
     if nbr_items != 0:        
         # create columns with the corresponding number of items
         columns = st.columns(cols)
-
         # convert df rows to dict lists
         items = df.to_dict(orient='records')
         # apply tile_item to each column-item tuple (created with python 'zip')
