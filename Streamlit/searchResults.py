@@ -5,7 +5,7 @@ import liveCalc as LC
 def jaccard_for_search(tokenizedTitles, searchtext_tokenized):
     distancelist = []
     for mediaID, tokens in tokenizedTitles.items():
-        distance = LC.jaccard_distance(searchtext_tokenized ,tokens)
+        distance = LC.jaccard_similarity(searchtext_tokenized ,tokens)
         distancelist.append([mediaID, distance])        
     return distancelist
 
