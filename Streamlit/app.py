@@ -12,9 +12,13 @@ import numpy as np
 search_bar_placeholder_text = "zoeken"
 
 st.set_page_config(layout="wide")
-df_NPO = pd.read_csv("NPOPlayer.csv", sep=";")
+#df_NPO = pd.read_csv("NPOPlayer.csv", sep=";")
+df_NPO = pd.read_csv("NPO_mike.csv")
+
 df_NPO[df_NPO["thumbnail"].isna()] = "no-image.png"
 df_NPO[df_NPO["longSummary"].isna()] = ""
+
+df_NPO['mainTitle'] = df_NPO['mainTitle'].fillna('')
 
 #df_users = pd.read_json('data/users.json')
 
@@ -38,18 +42,35 @@ if 'search' not in st.session_state:
 if 'df_NPO' not in st.session_state:
     st.session_state['df_NPO'] = df_NPO
 
+if 'show' not in st.session_state:
+    st.session_state['show'] = df_NPO[df_NPO['mediaID'] == st.session_state['mediaID']]["mainTitle"].values[0]
+
+if 'season' not in st.session_state:
+    st.session_state['season'] = df_NPO[df_NPO['mediaID'] == st.session_state['mediaID']]["season"].values[0]
+
+st.session_state["season"]
+
 # # uncommenten en dan kunnen we als we willen authenticatie weer aanzetten 
 # authenticate
 # a.authenticate()
 
 # retrieve mediaID from session state
 df_selected_mediaID = df_NPO[df_NPO['mediaID'] == st.session_state['mediaID']]
+df_selected_show = df_NPO[df_NPO['mainTitle'] == st.session_state['show']]
+#season = min(df_selected_show['season'])
 
+available_seasons = df_selected_show['season'].unique()
+season = st.selectbox('Select a season:', available_seasons, index=0)
+available_episodes = df_selected_show.loc[(df_selected_show['season'] == season)]
 ################################################
 # Shown on page:
 ################################################
 
 userseach = st.text_input('Movie title', search_bar_placeholder_text)
+
+
+#available_episodes = df_selected_show['episode'].loc[(df_selected_show['season'] == season)]
+
 
 col1, col2 = st.columns(2)
 with col1:
@@ -59,7 +80,7 @@ with col2:
     st.title(df_selected_mediaID['mainTitle'].values[0])
     st.caption(df_selected_mediaID['broadcaster'].values[0])
     st.markdown(df_selected_mediaID['longSummary'].values[0])
-    st.caption('Season ' + str(df_selected_mediaID['mediaID'].values[0]) + ' | episode ' + str(df_selected_mediaID['subTitle'].values[0]) + ' | Recomendations: ' + str(LC.get_top_k_ner_jaccard(df_NPO, st.session_state["mediaID"])['mediaID']))
+    st.caption('Season ' + str(df_selected_mediaID['mediaID'].values[0]) + ' | episode ' + str(df_selected_mediaID['subTitle'].values[0]) + ' | Recomendations: ' + st.session_state['show'])
 
 if(userseach != search_bar_placeholder_text and userseach != ""):
     with st.expander("search", expanded=True):
@@ -74,3 +95,14 @@ with st.expander('Implicit and Explicit feedback'):
 with st.expander("Jaccard Distance NER from this episode"):
     t.tiles(LC.get_top_k_ner_jaccard(df_NPO, st.session_state['mediaID'], 6))
 
+
+
+
+
+rows = int(available_episodes.shape[0] / 10) +1
+rows
+available_episodes.shape[0]
+for i in range(rows):
+    minrow = i*10
+    maxrow = min(minrow + 10, available_episodes.shape[0])
+    t.tiles(available_episodes.iloc[minrow:maxrow])
