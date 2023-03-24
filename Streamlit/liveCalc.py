@@ -3,7 +3,7 @@ import json
 import random
 import string
 
-with open('miediaID_NERTags.json', 'r') as fp:
+with open('data/miediaID_NERTags.json', 'r') as fp:
     media_tag_dict = json.load(fp)
 
 # Used to generate a random string as an "unique" identifier for the user
@@ -63,4 +63,3 @@ def get_top_k_ner_jaccard(df:pd.DataFrame, mediaID:str, topk:int=10, exclude_cur
         df_merged_jaccard_score = max_n_reccomendation_per_broadcaster(df_merged_jaccard_score, max_n=2)
     
     return df_merged_jaccard_score.head(topk)
-

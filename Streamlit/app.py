@@ -15,12 +15,11 @@ st.set_page_config(layout="wide")
 df_NPO = pd.read_csv("NPOPlayer.csv", sep=";")
 df_NPO[df_NPO["thumbnail"].isna()] = "no-image.png"
 df_NPO[df_NPO["longSummary"].isna()] = ""
-# the simpsons episodes
 
-df_users = pd.read_json('users.json')
+#df_users = pd.read_json('data/users.json')
 
 # open the activities json file
-with open('activities.json') as json_file:
+with open('data/activities.json') as json_file:
     users_activities = json.load(json_file)
 
 # create a session state

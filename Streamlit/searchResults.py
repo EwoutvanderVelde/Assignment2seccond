@@ -2,7 +2,12 @@ import pandas as pd
 import json
 import liveCalc as LC
 
-def jaccard_for_search(tokenizedTitles, searchtext_tokenized):
+# open tokenined titles
+with open('data/mediaID_MainTitleTokens.json') as json_file:
+    tokenizedTitles = json.load(json_file)
+
+
+def jaccard_score_for_search(searchtext_tokenized)-> list[list[str, float]]:
     distancelist = []
     for mediaID, tokens in tokenizedTitles.items():
         distance = LC.jaccard_similarity(searchtext_tokenized ,tokens)
@@ -11,10 +16,8 @@ def jaccard_for_search(tokenizedTitles, searchtext_tokenized):
 
 
 def get_search_result(df, searchtext:str, n_results=5)->pd.DataFrame:
-    with open('mediaID_MainTitleTokens.json') as json_file:
-        tokenizedTitles = json.load(json_file)
     searchtext_tokenized = searchtext.lower().split(" ")
-    JSframe = (pd.DataFrame(jaccard_for_search(tokenizedTitles, searchtext_tokenized), columns=['mediaID','JS']).sort_values(by='JS', ascending=False))
-    result = pd.merge(left=JSframe, right=df, left_on='mediaID', right_on="mediaID", how="inner")
-
-    return result.head(n_results)
+    jaccard_scores_list = jaccard_score_for_search(searchtext_tokenized)
+    jaccard_scores_df = pd.DataFrame(jaccard_scores_list, columns=['mediaID','jaccard_score']).sort_values(by='jaccard_score', ascending=False)
+    df_merge_jaccard_scores = pd.merge(left=jaccard_scores_df, right=df, left_on='mediaID', right_on="mediaID", how="inner")
+    return df_merge_jaccard_scores.head(n_results)
