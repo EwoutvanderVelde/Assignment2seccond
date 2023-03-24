@@ -5,7 +5,7 @@ import datetime
 
 # save the activities as a file
 def save_activities():
-    with open('activities.json', 'w') as outfile:
+    with open('data/activities.json', 'w') as outfile:
         json.dump(st.session_state['activities'], outfile)
 
 # function that processes an activity
@@ -19,8 +19,10 @@ def activity(id, activity):
 
 # set episode session state
 def select_episode(e):
-    st.session_state['mediaID'] = e
-    activity(e, 'Select mediaID')
+    st.session_state['mediaID'] = e['mediaID']
+    st.session_state['show'] = e['mainTitle']
+    st.session_state['season'] = e['season']
+    activity(e['mediaID'], 'Select mediaID')
 
 def tile_item(column, item):
     with column:
@@ -32,7 +34,7 @@ def tile_item(column, item):
         st.caption(item['longSummary'][:50] + (item['longSummary'][50:] and '..'))
         
         #st.caption('Season ' + str(item['season']) + ' | episode ' + str(item['episode']) + ' | Rating ' + str(item['rating']) + ' | ' + str(item['votes']) + ' votes')
-        st.button('▶', key=random(), on_click=select_episode, args=(item['mediaID'], ))
+        st.button('▶', key=random(), on_click=select_episode, args=(item, ))
 
 def tiles(df):
     # check the number of items
