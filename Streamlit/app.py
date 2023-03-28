@@ -7,6 +7,7 @@ from itertools import cycle
 from random import random
 import liveCalc as LC
 import searchResults as SR
+import colabborative_reccomendations as CR
 import numpy as np
 
 search_bar_placeholder_text = "Zoeken..."
@@ -56,13 +57,12 @@ if 'season' not in st.session_state:
 df_selected_mediaID = df_NPO[df_NPO['mediaID'] == st.session_state['mediaID']]
 df_selected_show = df_NPO[df_NPO['mainTitle'] == st.session_state['show']]
 available_seasons = list(df_selected_show['season'].sort_values().unique())
-season = st.selectbox('Select a season:', available_seasons, index=available_seasons.index(df_selected_mediaID['season'].values[0]))
-
-available_episodes = df_selected_show.loc[(df_selected_show['season'] == season)]
 
 ################################################
 # Shown on page:
 ################################################
+st.session_state['user']
+userdistance = st.button("Calculate new personal recommendations", key=random(), on_click=CR.renewPersonalRecomedations, args=(st.session_state['user'],users_activities, df_NPO))
 
 userseach = st.text_input('Movie title', search_bar_placeholder_text)
 
@@ -87,16 +87,14 @@ if(userseach != search_bar_placeholder_text and userseach != ""):
 
 
 with st.expander('Implicit and Explicit feedback'):
-    st.button('👍', key=random(), on_click=t.activity, args=(df_selected_mediaID['mediaID'].values[0], 'Like' ))    
-    st.button('👎', key=random(), on_click=t.activity, args=(df_selected_mediaID['mediaID'].values[0], 'Dislike'))    
+    st.button('👍', key=random(), on_click=t.activity, args=(df_selected_mediaID['mediaID'].values[0], '1' ))    
+    st.button('👎', key=random(), on_click=t.activity, args=(df_selected_mediaID['mediaID'].values[0], '-1'))    
 
 with st.expander("Jaccard Distance NER from this episode"):
     t.tiles(LC.get_top_k_ner_jaccard(df_NPO, st.session_state['mediaID'], 6))
 
 
 rows = int(available_episodes.shape[0] / 10) +1
-rows
-available_episodes.shape[0]
 for i in range(rows):
     minrow = i*10
     maxrow = min(minrow + 10, available_episodes.shape[0])

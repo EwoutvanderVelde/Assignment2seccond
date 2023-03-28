@@ -49,13 +49,14 @@ for i, row in enumerate(large_empty):
         content_id = (j[1]["content_id"])
         columnindex = mediaID_index[content_id]
         row[columnindex] += 1
-        print(i, columnindex)
+        #print(i, columnindex)
 #print(large_empty)
 
 print(large_empty[7, 90635])
-
 print(large_empty.nbytes)
- 
+
+for user in userlist:
+    print(user)
 
 
 # activities = (df_activities[df_activities['activity'] == "Select mediaID"])
