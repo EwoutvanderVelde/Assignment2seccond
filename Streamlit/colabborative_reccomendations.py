@@ -5,7 +5,7 @@ import numpy as np
 def renew_data_frames():
     df_activities = pd.read_json("data/activities.json")
     df_selected = df_activities[df_activities['activity'] == "Select mediaID"]
-    df_npo = pd.read_csv("data/NPO_mike.csv", sep=";")
+    df_npo = pd.read_csv("data/NPO_mike.csv")
     return df_selected, df_npo
 
 def get_unique_users(df):
@@ -75,6 +75,7 @@ def renewPersonalRecomedations(current_user, user_activities, df_npo):
     distance_to_other_users = get_distance_to_other_users(user_rating_matrix, user_rating_mean, current_user, index_userID, userID_index)
     
     return distance_to_other_users
+
 
 #renewPersonalRecomedations("teqocdjxcd", renew_data_frames())
 

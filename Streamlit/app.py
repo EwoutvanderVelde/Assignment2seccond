@@ -91,7 +91,7 @@ with st.expander('Implicit and Explicit feedback'):
 with st.expander("Jaccard Distance NER from this episode"):
     t.tiles(LC.get_top_k_ner_jaccard(df_NPO, st.session_state['mediaID'], 6))
 
-
+"From this season"
 rows = int(available_episodes.shape[0] / 10) +1
 for i in range(rows):
     minrow = i*10
