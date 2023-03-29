@@ -76,7 +76,7 @@ def renewPersonalRecomedations(current_user, user_activities, df_npo):
     
     return distance_to_other_users
 
-#print(renewPersonalRecomedations("teqocdjxcd"))
+#renewPersonalRecomedations("teqocdjxcd", renew_data_frames())
 
 
 

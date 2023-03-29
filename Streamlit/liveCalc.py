@@ -18,7 +18,10 @@ def jaccard_similarity(mediaID_tags_a:list[str], mediaID_tags_b:list[str])->floa
     
     union = set_tags_a.union(set_tags_b)
     intersection = set_tags_a.intersection(set_tags_b)
-    return len(intersection) / float(len(union))
+    if len(union) != 0: #  Zero devision
+        return float(len(intersection)) / float(len(union))
+    else:
+        return 0
 
 
 # get kaccard_similarity all other mediaID's
