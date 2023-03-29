@@ -13,15 +13,13 @@ import numpy as np
 search_bar_placeholder_text = "Zoeken..."
 
 st.set_page_config(layout="wide")
-#df_NPO = pd.read_csv("NPOPlayer.csv", sep=";")
-df_NPO = pd.read_csv("NPO_mike.csv")
+#df_NPO = pd.read_csv("data/NPOPlayer.csv", sep=";")
+df_NPO = pd.read_csv("data/NPO_mike.csv")
 
 df_NPO[df_NPO["thumbnail"].isna()] = "no-image.png"
 df_NPO[df_NPO["longSummary"].isna()] = ""
 
 df_NPO['mainTitle'] = df_NPO['mainTitle'].fillna('')
-
-#df_users = pd.read_json('data/users.json')
 
 # open the activities json file
 with open('data/activities.json') as json_file:

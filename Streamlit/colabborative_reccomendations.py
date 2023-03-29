@@ -5,7 +5,7 @@ import numpy as np
 def renew_data_frames():
     df_activities = pd.read_json("data/activities.json")
     df_selected = df_activities[df_activities['activity'] == "Select mediaID"]
-    df_npo = pd.read_csv("NPOPlayer.csv", sep=";")
+    df_npo = pd.read_csv("data/NPO_mike.csv", sep=";")
     return df_selected, df_npo
 
 def get_unique_users(df):
