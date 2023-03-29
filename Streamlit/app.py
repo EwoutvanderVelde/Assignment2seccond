@@ -47,9 +47,8 @@ if 'show' not in st.session_state:
 if 'season' not in st.session_state:
     st.session_state['season'] = df_NPO[df_NPO['mediaID'] == st.session_state['mediaID']]["season"].values[0]
 
-# # uncommenten en dan kunnen we als we willen authenticatie weer aanzetten 
-# authenticate
-# a.authenticate()
+if 'userRecommendations' not in st.session_state:
+    st.session_state['userRecommendations'] = None  # We need a placeholder
 
 # retrieve mediaID from session state
 df_selected_mediaID = df_NPO[df_NPO['mediaID'] == st.session_state['mediaID']]
@@ -60,7 +59,7 @@ available_seasons = list(df_selected_show['season'].sort_values().unique())
 # Shown on page:
 ################################################
 st.session_state['user']
-userdistance = st.button("Calculate new personal recommendations", key=random(), on_click=CR.renewPersonalRecomedations, args=(st.session_state['user'],users_activities, df_NPO))
+userdistance = st.button("Calculate new personal recommendations", key=random(), on_click=CR.renewPersonalRecomedations, args=(st.session_state['user'], df_NPO))
 
 userseach = st.text_input('Movie title', search_bar_placeholder_text)
 
@@ -76,7 +75,7 @@ with col2:
     st.caption(df_selected_mediaID['broadcaster'].values[0])
     st.markdown(df_selected_mediaID['longSummary'].values[0])
     st.caption('Season ' + str(df_selected_mediaID['mediaID'].values[0]) + ' | episode ' + str(df_selected_mediaID['subTitle'].values[0]) + ' | Recomendations: ' + st.session_state['show'])
-
+    st.radio("Rating", options=(['no rating', '1', '2','3', '4', '5']), key="rating", horizontal =True, on_change=t.activity, args=(df_selected_mediaID['mediaID'].values[0], '1'))
 if(userseach != search_bar_placeholder_text and userseach != ""):
     st.session_state['search'] = userseach
     with st.expander("search", expanded=True):

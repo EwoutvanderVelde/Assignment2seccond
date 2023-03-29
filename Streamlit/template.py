@@ -10,7 +10,7 @@ def save_activities():
 
 # function that processes an activity
 def activity(id, activity):
-    data = {'content_id': id, 'activity': activity, 'user_id': st.session_state['user'], 'datetime': str(datetime.datetime.now())}
+    data = {'content_id': id, 'rating': st.session_state['rating'], 'user_id': st.session_state['user'], 'datetime': str(datetime.datetime.now())}
     print(data)
     # add to the session state
     st.session_state['activities'].append(data)
@@ -22,7 +22,8 @@ def select_episode(e):
     st.session_state['mediaID'] = e['mediaID']
     st.session_state['show'] = e['mainTitle']
     st.session_state['season'] = e['season']
-    activity(e['mediaID'], 'Select mediaID')
+    # activity(e['mediaID'], 'Select mediaID')
+    pass
 
 def tile_item(column, item):
     with column:
