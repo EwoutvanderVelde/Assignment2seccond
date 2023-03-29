@@ -59,7 +59,8 @@ available_seasons = list(df_selected_show['season'].sort_values().unique())
 # Shown on page:
 ################################################
 st.session_state['user']
-userdistance = st.button("Calculate new personal recommendations", key=random(), on_click=CR.renewPersonalRecomedations, args=(st.session_state['user'], df_NPO))
+st.session_state['userRecommendations']
+st.button("Calculate new personal recommendations", key=random(), on_click=CR.renewPersonalRecomedations, args=(st.session_state['user'], df_NPO))
 
 userseach = st.text_input('Movie title', search_bar_placeholder_text)
 
