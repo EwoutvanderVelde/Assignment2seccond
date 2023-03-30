@@ -51,6 +51,7 @@ if 'season' not in st.session_state:
 if 'userRecommendations' not in st.session_state:
     st.session_state['userRecommendations'] = None  # We need a placeholder
 
+
 # retrieve mediaID from session state
 df_selected_mediaID = df_NPO[df_NPO['mediaID'] == st.session_state['mediaID']]
 df_selected_show = df_NPO[df_NPO['mainTitle'] == st.session_state['show']]
