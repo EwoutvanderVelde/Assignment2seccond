@@ -14,7 +14,8 @@ search_bar_placeholder_text = "Zoeken..."
 
 st.set_page_config(layout="wide")
 #df_NPO = pd.read_csv("data/NPOPlayer.csv", sep=";")
-df_NPO = pd.read_csv("data/NPO_mike.csv")
+#df_NPO = pd.read_csv("data/NPO_mike.csv")
+df_NPO = pd.read_csv("data/NPOPlayerv2.csv")
 
 df_NPO[df_NPO["thumbnail"].isna()] = "no-image.png"
 df_NPO[df_NPO["longSummary"].isna()] = ""
