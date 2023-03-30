@@ -59,7 +59,13 @@ available_seasons = list(df_selected_show['season'].sort_values().unique())
 ################################################
 # Shown on page:
 ################################################
-st.session_state['user']
+
+# ONLY USED FOR TRAINING THE PERSONAL RECOMMENDATION
+userID = st.text_input('UserID', st.session_state['user'])
+if userID != st.session_state['user']:
+    st.session_state['user'] = userID
+
+
 st.session_state['userRecommendations']
 st.button("Calculate new personal recommendations", key=random(), on_click=CR.renewPersonalRecomedations, args=(st.session_state['user'], df_NPO))
 
@@ -85,12 +91,19 @@ if(userseach != search_bar_placeholder_text and userseach != ""):
 
 
 
-with st.expander('Implicit and Explicit feedback'):
-    st.button('👍', key=random(), on_click=t.activity, args=(df_selected_mediaID['mediaID'].values[0], '1' ))    
-    st.button('👎', key=random(), on_click=t.activity, args=(df_selected_mediaID['mediaID'].values[0], '-1'))    
+with st.expander("(Personal) recommendations"):
+    t.tiles(LC.getRecommendations(df_NPO, st.session_state['mediaID'], 10))
 
-with st.expander("Jaccard Distance NER from this episode"):
-    t.tiles(LC.get_top_k_ner_jaccard(df_NPO, st.session_state['mediaID'], 6))
+
+# # UNUSED
+# with st.expander('Implicit and Explicit feedback'):
+#     st.button('👍', key=random(), on_click=t.activity, args=(df_selected_mediaID['mediaID'].values[0], '1' ))    
+#     st.button('👎', key=random(), on_click=t.activity, args=(df_selected_mediaID['mediaID'].values[0], '-1'))    
+
+# # DOWNGRADED
+# with st.expander("Jaccard Distance NER from this episode"):
+#     t.tiles(LC.get_top_k_ner_jaccard(df_NPO, st.session_state['mediaID'], 6))
+
 
 "From this season"
 rows = int(available_episodes.shape[0] / 10) +1
