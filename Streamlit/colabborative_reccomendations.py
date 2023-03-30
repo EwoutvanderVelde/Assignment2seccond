@@ -53,7 +53,13 @@ def get_simularity_to_other_users(user_rating_matrix, user_mean_dict, userID, in
                 row_b_norm = [score-row_b_mean if score !=0 else 0 for score in row_b]
             else:
                 row_b_norm = row_b
-            simularity_dict[index_userID[index_b]] = np.dot(row_a_norm, row_b_norm)/(np.linalg.norm(row_a_norm) * np.linalg.norm(row_b_norm))
+            numerator = np.dot(row_a_norm, row_b_norm)
+            denomenator = (np.linalg.norm(row_a_norm) * np.linalg.norm(row_b_norm))
+            if denomenator != 0:
+                sim = numerator/denomenator
+            else: 
+                sim=0   
+            simularity_dict[index_userID[index_b]] = sim
     return simularity_dict, row_a_mean
 
 
@@ -61,14 +67,13 @@ def sort_simularitys(simularitys:dict)->dict:
     return dict(sorted(simularitys.items(), key=lambda x:x[1]))
 
 
-def userItemPrediction(df_selected, simularity_to_other_users, current_user_mean, user_rating_matrix, mediaID_index, index_mediaID, userID_index, max_neighbourhood = 5):
+def userItemPrediction(df_selected, simularity_to_other_users, current_user_mean, user_rating_matrix, mediaID_index, index_mediaID, userID_index, max_neighbourhood = 50):
     sorted_simularitys = sort_simularitys(simularity_to_other_users)
     
     if len(sorted_simularitys) < max_neighbourhood:
         neighbours = sorted_simularitys
     else:
         neighbours = sorted_simularitys[:max_neighbourhood]
-
     unique_mediaID = df_selected[df_selected['user_id'].isin(neighbours.keys())]["content_id"].unique()
     recommendations = {}
     for mediaID in unique_mediaID:
@@ -76,10 +81,10 @@ def userItemPrediction(df_selected, simularity_to_other_users, current_user_mean
         numerator = 0
         denominator = 0        
         for userID, simularity in neighbours.items():
-            numerator += simularity*user_rating_matrix[userID_index[userID], matrix_mediaID_index]
-            denominator += simularity
+            if((user_rating:= user_rating_matrix[userID_index[userID], matrix_mediaID_index]) != np.nan):
+                numerator += simularity*user_rating
+                denominator += simularity
         recommendations[mediaID] = current_user_mean + (numerator/denominator)
-
     return recommendations
 
 
@@ -96,20 +101,21 @@ def renewPersonalRecomedations(current_user, df_npo):
     
     simularity_to_other_users, current_user_mean = get_simularity_to_other_users(user_rating_matrix, user_rating_mean, current_user, index_userID, userID_index, df_selected, mediaIDList, mediaID_index)
     predictions = userItemPrediction(df_selected, simularity_to_other_users, current_user_mean, user_rating_matrix, mediaID_index, index_mediaID, userID_index)
-    
     # nog kiezen welke handiger is...
-    st.session_state['userRecommendations'] = df_npo[df_npo["mediaID"].isin(predictions.keys())]
-    #st.session_state['userRecommendations'] = predictions
+    result = df_npo[df_npo["mediaID"].isin(predictions.keys())]
+    result['userPrediction'] = result['mediaID'].apply(lambda x: predictions[x])
+    #st.session_state['userRecommendations'] = df_npo[df_npo["mediaID"].isin(predictions.keys())]
+    st.session_state['userRecommendations'] = result
 
-    return predictions
+    return result
 
 
-def test():
-    df_selected, df_npo = renew_data_frames()
-    print(renewPersonalRecomedations("zuiiztxxjt",df_npo))
+def test(df_npo):
+    df_selected = renew_data_frames()
+    print(f'-------------------------RESULT --------------------------------- \n {renewPersonalRecomedations("zuiiztxxjt",df_npo)}')
     return
 
-#test()
+#test(pd.read_csv("data/NPOPlayerv2.csv"))
 #renewPersonalRecomedations("teqocdjxcd", renew_data_frames())
 
 
