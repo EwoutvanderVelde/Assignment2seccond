@@ -73,12 +73,11 @@ def get_similar_content(df, mediaID):
     return df[df['Topic'] == topic]
 
 def getRecommendations(df:pd.DataFrame, mediaID:str, topk:int=10, exclude_current_broadcaster=True, no_repeat=True)->pd.DataFrame:
-    minRating = 2
     content_based_recommendations = get_similar_content(df, mediaID)
     content_based_recommendations = content_based_recommendations[content_based_recommendations["mediaID"] != mediaID]
     user_based_recommendations = st.session_state['userRecommendations']
     if user_based_recommendations is None:
-        return max_n_reccomendation_per_broadcaster(content_based_recommendations).sample(topk)
+        return max_n_reccomendation_per_broadcaster(content_based_recommendations).sample(topk, replace=False)
     else:
         in_both = pd.merge(content_based_recommendations, user_based_recommendations[["mediaID", "userPrediction"]]).sort_values('userPrediction', ascending= False)
         if (len(in_both) < topk):
