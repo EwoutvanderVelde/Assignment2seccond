@@ -8,35 +8,33 @@ def save_activities():
     with open('data/activities.json', 'w') as outfile:
         json.dump(st.session_state['activities'], outfile)
 
-# function that processes an activity
+# function that processes the userfeedback activity
 def activity(id, activity):
     data = {'content_id': id, 'rating': st.session_state['rating'], 'user_id': st.session_state['user'], 'datetime': str(datetime.datetime.now())}
-    print(data)
-    # add to the session state
+    print(f"template.py activity() line 13: {data}")
     st.session_state['activities'].append(data)
-    # directly save the activities
     save_activities()
 
-# set episode session state
+# set mediaID, show, and season session state
 def select_episode(e):
     st.session_state['mediaID'] = e['mediaID']
-    st.session_state['show'] = e['mainTitle']
+    st.session_state['mainTitle'] = e['mainTitle']
     st.session_state['season'] = e['season']
-    # activity(e['mediaID'], 'Select mediaID')
     pass
 
+# Set and media item to a time
 def tile_item(column, item):
     with column:
+        # Some shows do not have an image, use the very pyhtonic "Try and see if it fails" method
         try:
             st.image(item['thumbnail'], use_column_width='always')
         except st.runtime.media_file_storage.MediaFileStorageError:
             st.image("no-image.png", use_column_width='always')
         st.markdown(item['mainTitle'])
         st.caption(item['longSummary'][:50] + (item['longSummary'][50:] and '..'))
-        
-        #st.caption('Season ' + str(item['season']) + ' | episode ' + str(item['episode']) + ' | Rating ' + str(item['rating']) + ' | ' + str(item['votes']) + ' votes')
         st.button('▶', key=random(), on_click=select_episode, args=(item, ))
 
+# make tiles next to each other and fillthese with shows.
 def tiles(df):
     # check the number of items
     nbr_items = df.shape[0]

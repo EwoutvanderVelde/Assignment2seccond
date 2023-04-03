@@ -4,9 +4,10 @@ import random
 import string
 import streamlit as st
 
+""" DEPRECIATED
 with open('data/miediaID_NERTags.json', 'r') as fp:
     media_tag_dict = json.load(fp)
-
+""" 
 # Used to generate a random string as an "unique" identifier for the user
 def generate_random_userID(length):
     return ''.join(random.choice(string.ascii_lowercase) for i in range(length))
@@ -24,7 +25,7 @@ def jaccard_similarity(mediaID_tags_a:list[str], mediaID_tags_b:list[str])->floa
     else:
         return 0
 
-
+""" Depreciated
 # get kaccard_similarity all other mediaID's
 def get_jaccard_similarity_list(mediaID:str)->list[list[str, float]]:
     tags = media_tag_dict[mediaID]
@@ -33,7 +34,7 @@ def get_jaccard_similarity_list(mediaID:str)->list[list[str, float]]:
         distance = jaccard_similarity(tags ,value)
         distancelist.append([key, distance])        
     return distancelist
-
+"""
 
 # filter function to even out the recommendations. Use this function to get only n recommendations per broadcaster
 def max_n_reccomendation_per_broadcaster(df:pd.DataFrame, max_n:int = 2)->pd.DataFrame:
@@ -51,7 +52,7 @@ def max_n_reccomendation_per_broadcaster(df:pd.DataFrame, max_n:int = 2)->pd.Dat
     df_copy["keep"] = df_copy["broadcaster"].apply(lambda x: check_if_double(x))            
     return df_copy[df_copy["keep"]==True].drop(columns= ["keep"])  # Drop the keep column for consistency
 
-
+""" Depreciated
 def get_top_k_ner_jaccard(df:pd.DataFrame, mediaID:str, topk:int=10, exclude_current_broadcaster=True, no_repeat=True)-> pd.DataFrame:
     jaccard_similarity_list = get_jaccard_similarity_list(mediaID)
     jaccard_similarity_df = pd.DataFrame(jaccard_similarity_list, columns=['mediaID','jaccard_score']).sort_values(by='jaccard_score', ascending=False)
@@ -67,6 +68,7 @@ def get_top_k_ner_jaccard(df:pd.DataFrame, mediaID:str, topk:int=10, exclude_cur
         df_merged_jaccard_score = max_n_reccomendation_per_broadcaster(df_merged_jaccard_score, max_n=2)
     
     return df_merged_jaccard_score.head(topk)
+"""
 
 def get_similar_content(df, mediaID):
     topic = df[df['mediaID'] == mediaID]['Topic'].values[0]

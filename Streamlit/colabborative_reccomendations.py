@@ -1,19 +1,25 @@
+"""
+This code generates user specific predictions for content not watched
+Note everything is in functions to not run code unneccesaroly when loading in this file
+"""
+
 import pandas as pd
-import json
 import numpy as np
 import pickle
 import streamlit as st
 
 
+# Function to open pickle files, we will open a lot of them...
 def open_pickle(varname):
     with open(f'data/{varname}.pkl', 'rb') as fp:
         var = pickle.load(fp)
     return var
 
+# Load the activities data again to make sure we have the latest data.
 def renew_data_frames():
     df_activities = pd.read_json("data/activities.json")
-    df_selected = df_activities[df_activities['rating'] != "no rating"]
-    return df_selected
+    df_ratings = df_activities[df_activities['rating'] != "no rating"]
+    return df_ratings
 
 def get_user_row_from_df(df_selected:pd.DataFrame, userID:str)-> list[int]:
         return list(df_selected[df_selected['user_id'] == userID]['rating'].astype(np.float32))
@@ -88,7 +94,6 @@ def userItemPrediction(df_selected, simularity_to_other_users, current_user_mean
     return recommendations
 
 
-# old code
 def renewPersonalRecomedations(current_user, df_npo):
     # Load all pre processed data
     df_selected = renew_data_frames()
