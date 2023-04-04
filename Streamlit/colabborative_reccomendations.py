@@ -10,7 +10,6 @@ import streamlit as st
 DEBUG = True
 
 
-
 def open_pickle(varname):
     """
     Function to open pickle files, we will open a lot of them...
@@ -38,7 +37,7 @@ def get_user_ratings_from_df(df_ratings:pd.DataFrame, userID:str)-> list[int]:
     Get all the ratings from the current user in list format
     """
     if DEBUG:
-        print(f"collabFilter.py get_user_ratings_from_df df_ratings[df_ratings['user_id'] == userID]['rating']: {df_ratings[df_ratings['user_id'] == userID]['rating']}")
+        print(f"collabFilter.py get_user_ratings_from_df df_ratings[df_ratings['user_id'] == userID]['rating']: \n{df_ratings[df_ratings['user_id'] == userID]['rating']}\n")
     
     return df_ratings[df_ratings['user_id'] == userID]
 
@@ -63,6 +62,7 @@ def create_user_rating_row(df_ratings, mediaIDList, mediaID2index, userID):
     own_ratings=np.zeros([1,ncols], dtype=np.int8)  # np.int8 is to save some memory
     
     if DEBUG:
+        print(f"collabFilter.py create_user_rating_row userID: {userID}")
         print(f"collabFilter.py create_user_rating_row user_ratings: {own_ratings}")
         print(f"collabFilter.py create_user_rating_row type(user_ratings): {type(own_ratings)}")
         print(f"collabFilter.py create_user_rating_row user_ratings.shape: {own_ratings.shape}")
@@ -109,7 +109,6 @@ def get_simularity_to_other_users(user_rating_matrix, user_mean_dict, userID, in
         row_current_user_mean = 0
 
     row_current_user_normalized = [score-row_current_user_mean if score !=0 else 0 for score in row_current_user]
-
     simularity_dict = {}
 
     for index_other_user, row_other_user in enumerate(user_rating_matrix):
@@ -132,6 +131,11 @@ def get_simularity_to_other_users(user_rating_matrix, user_mean_dict, userID, in
                 simularity=0
 
             simularity_dict[index2userID[index_other_user]] = simularity
+    print(f"collabFilter.py get_simularity_to_other_users index2userID:{index2userID}")
+    #print(f"collabFilter.py get_simularity_to_other_users row_current_user_mean:{row_current_user_mean}")
+    #print(f"collabFilter.py get_simularity_to_other_users row_current_user_mean:{row_current_user_mean}")
+    print(f"collabFilter.py get_simularity_to_other_users simularity_dict_filled:{simularity_dict}")
+    print(f"collabFilter.py get_simularity_to_other_users row_current_user_mean:{row_current_user_mean}")
     return simularity_dict, row_current_user_mean
 
 
@@ -142,7 +146,7 @@ def sort_simularities(simularities:dict)->dict:
     return dict(sorted(simularities.items(), key=lambda x:x[1]))
 
 
-def userItemPrediction(df_selected, simularity_to_other_users, current_user_mean, user_rating_matrix, mediaID2index, userID2index, max_neighbourhood = 50)->dict:
+def userItemPrediction(df_ratings, simularity_to_other_users, current_user_mean, user_rating_matrix, mediaID2index, userID2index, max_neighbourhood = 50)->dict:
     """
     Predict rating for current user
     """
@@ -155,7 +159,7 @@ def userItemPrediction(df_selected, simularity_to_other_users, current_user_mean
         neighbours = sorted_simularities[:max_neighbourhood]
 
     # We only want to make predictions for which we know a rating from other users
-    unique_mediaID = df_selected[df_selected['user_id'].isin(neighbours.keys())]["content_id"].unique()
+    unique_mediaID = df_ratings[df_ratings['user_id'].isin(neighbours.keys())]["content_id"].unique()
 
     # Use the formula on slides week 6
     recommendations = {}

@@ -78,6 +78,12 @@ st.button("Calculate new personal recommendations", key=random(), on_click=CR.re
 
 user_search_query = st.text_input('Movie title', search_bar_placeholder_text, label_visibility="collapsed")
 
+# If the user made a search, show the results
+if(user_search_query != search_bar_placeholder_text and user_search_query != ""):
+    st.session_state['user_search_query'] = user_search_query
+    with st.expander("search", expanded=True):
+        t.tiles(SR.get_search_result(df_NPO ,user_search_query, 5))
+
 # Visuelisation of the current selected mediaID
 col1, col2 = st.columns(2)
 with col1:
@@ -90,12 +96,6 @@ with col2:
     st.markdown(df_selected_mediaID['longSummary'].values[0])
     season = st.selectbox('Kies seizoen:', available_seasons, index=available_seasons.index(df_selected_mediaID['season'].values[0]))
     st.radio("Beoorderling", options=(['no rating', '1', '2','3', '4', '5']), key="rating", horizontal =True, on_change=t.activity, args=(df_selected_mediaID['mediaID'].values[0], '1'))
-
-# If the user made a search, show the results
-if(user_search_query != search_bar_placeholder_text and user_search_query != ""):
-    st.session_state['user_search_query'] = user_search_query
-    with st.expander("search", expanded=True):
-        t.tiles(SR.get_search_result(df_NPO ,user_search_query, 5))
 
 
 with st.expander("(Persoonlijke) aanbevelingen", expanded=True):

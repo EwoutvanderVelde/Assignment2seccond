@@ -3,11 +3,18 @@ import json
 import numpy as np
 import pickle
 
+
+"""
+This file might only work when ran from command prompt.
+Relative filepaths are not always working nice...
+"""
+
+
 def renew_data_frames():
     df_activities = pd.read_json("streamlit/data/activities.json")
     df_selected = df_activities[df_activities['rating'] != "no rating"]
 
-    df_npo = pd.read_csv("streamlit/data/NPO_mike.csv")
+    df_npo = pd.read_csv("streamlit/data/NPOPlayerv2.csv")
     return df_selected, df_npo
 
 def get_unique_users(df):
