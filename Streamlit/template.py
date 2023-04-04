@@ -3,6 +3,7 @@ from random import random
 import json
 import datetime
 
+DEBUG = False
 # save the activities as a file
 def save_activities():
     with open('data/activities.json', 'w') as outfile:
@@ -11,7 +12,8 @@ def save_activities():
 # function that processes the userfeedback activity
 def activity(id, activity):
     data = {'content_id': id, 'rating': st.session_state['rating'], 'user_id': st.session_state['user'], 'datetime': str(datetime.datetime.now())}
-    print(f"template.py activity() line 13: {data}")
+    if DEBUG:
+        print(f"template.py activity() line 13: {data}")
     st.session_state['activities'].append(data)
     save_activities()
 

@@ -4,6 +4,9 @@ import random
 import string
 import streamlit as st
 
+DEBUG = False
+
+
 """ DEPRECIATED
 with open('data/miediaID_NERTags.json', 'r') as fp:
     media_tag_dict = json.load(fp)
@@ -87,6 +90,8 @@ def get_similar_content(df, mediaID):
     returns dataframe where content is has the same topic as mediaID
     """
     topic = df[df['mediaID'] == mediaID]['Topic'].values[0]
+    if DEBUG:
+        print(f"liveCalc.py get_similar_content topic: {topic}")
     return df[df['Topic'] == topic]
 
 
@@ -102,13 +107,15 @@ def getRecommendations(df:pd.DataFrame, mediaID:str, topk:int=10, exclude_curren
     user_based_recommendations = st.session_state['userRecommendations']
     
     if user_based_recommendations is None:
-        return max_n_reccomendation_per_broadcaster(content_based_recommendations).sample(topk, replace=False)
+        all_results = max_n_reccomendation_per_broadcaster(content_based_recommendations)
+        topk = min(topk, len(all_results))
+        return all_results.sample(topk, replace=False)
     else:
         in_both = pd.merge(content_based_recommendations, user_based_recommendations[["mediaID", "userPrediction"]]).sort_values('userPrediction', ascending= False)
         if (len(in_both) < topk):
             n_to_add = topk - len(in_both)
             in_both = pd.concat([in_both, user_based_recommendations[user_based_recommendations["mediaID"] != mediaID]], axis = 0, ignore_index=True)
-            #in_both = in_both.append(user_based_recommendations[user_based_recommendations["mediaID"] != mediaID])
-
-        result = max_n_reccomendation_per_broadcaster(in_both, max_n=2).head(topk)
+        all_results = max_n_reccomendation_per_broadcaster(in_both, max_n=2)
+        topk = min(topk, len(all_results))
+        result = all_results.head(topk)
         return result
