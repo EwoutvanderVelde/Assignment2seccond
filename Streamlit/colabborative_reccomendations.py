@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import pickle
 import streamlit as st
-DEBUG = True
+DEBUG = False
 
 
 def open_pickle(varname):
@@ -212,6 +212,7 @@ def test(df_npo):
 # Only run when we are debugging, this does not run when script is imported
 if __name__ == "__main__":
     # Calling functions to test
+    DEBUG = True
     test(pd.read_csv("data/NPOPlayerv2.csv"))
 
 

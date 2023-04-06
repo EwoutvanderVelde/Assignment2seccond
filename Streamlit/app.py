@@ -82,7 +82,7 @@ user_search_query = st.text_input('Movie title', search_bar_placeholder_text, la
 if(user_search_query != search_bar_placeholder_text and user_search_query != ""):
     st.session_state['user_search_query'] = user_search_query
     with st.expander("search", expanded=True):
-        t.tiles(SR.get_search_result(df_NPO ,user_search_query, 5))
+        t.tiles(SR.get_search_result_v2(df_NPO ,user_search_query, 5))
 
 # Visuelisation of the current selected mediaID
 col1, col2 = st.columns(2)
