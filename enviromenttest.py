@@ -1,1 +1,0 @@
-print("run from right eniveroment")
