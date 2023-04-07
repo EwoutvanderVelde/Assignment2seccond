@@ -95,7 +95,7 @@ with col2:
     st.caption(str(df_selected_mediaID['subTitle'].values[0]))
     st.markdown(df_selected_mediaID['longSummary'].values[0])
     season = st.selectbox('Kies seizoen:', available_seasons, index=available_seasons.index(df_selected_mediaID['season'].values[0]))
-    st.radio("Beoorderling", options=(['no rating', '1', '2','3', '4', '5']), key="rating", horizontal =True, on_change=t.activity, args=(df_selected_mediaID['mediaID'].values[0], '1'))
+    st.radio("Beoordeling", options=(['no rating', '1', '2','3', '4', '5']), key="rating", horizontal =True, on_change=t.activity, args=(df_selected_mediaID['mediaID'].values[0], '1'))
 
 
 with st.expander("(Persoonlijke) aanbevelingen", expanded=True):
