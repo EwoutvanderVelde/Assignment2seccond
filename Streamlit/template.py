@@ -4,6 +4,7 @@ import json
 import datetime
 
 DEBUG = False
+
 # save the activities as a file
 def save_activities():
     with open('data/activities.json', 'w') as outfile:

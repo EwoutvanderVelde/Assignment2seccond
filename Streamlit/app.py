@@ -10,7 +10,7 @@ import searchResults as SR
 import colabborative_reccomendations as CR
 import numpy as np
 
-TRAINING = True
+TRAINING = False
 
 search_bar_placeholder_text = "Zoeken..."
 
@@ -74,7 +74,7 @@ if TRAINING:
         st.session_state['user'] = userID
     st.session_state['userRecommendations']
 
-st.button("Calculate new personal recommendations", key=random(), on_click=CR.renewPersonalRecomedations, args=(st.session_state['user'], df_NPO))
+st.button("Geef nieuwe suggesties voor mij", key=random(), on_click=CR.renewPersonalRecomedations, args=(st.session_state['user'], df_NPO))
 
 user_search_query = st.text_input('Movie title', search_bar_placeholder_text, label_visibility="collapsed")
 

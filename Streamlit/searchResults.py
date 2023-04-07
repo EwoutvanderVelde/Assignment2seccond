@@ -2,7 +2,7 @@ import pandas as pd
 import json
 import liveCalc as LC
 
-DEBUG = True
+DEBUG = False
 
 def jaccard_score_for_search(searchtext_tokenized, ditornary:dict)-> list[list[str, float]]:
     """
