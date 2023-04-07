@@ -10,7 +10,7 @@ import searchResults as SR
 import colabborative_reccomendations as CR
 import numpy as np
 
-TRAINING = False
+TRAINING = True
 
 search_bar_placeholder_text = "Zoeken..."
 

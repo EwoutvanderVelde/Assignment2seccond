@@ -2,7 +2,7 @@ import pandas as pd
 import json
 import liveCalc as LC
 
-DEBUG = False
+DEBUG = True
 
 def jaccard_score_for_search(searchtext_tokenized, ditornary:dict)-> list[list[str, float]]:
     """
@@ -61,6 +61,9 @@ def get_mediaID_from_first_season_random(df, jaccardscores:pd.DataFrame):
     Funcion that swithces the mainTitle with a mediaID in jaccardscore dataframe
     """
     mainTile2mediaID = []
+    if DEBUG:
+        print(f"searchReuslts.py get_mediaID_from_fist_season_random jaccardscores \n{jaccardscores}\n")
+
     jaccardscores["mediaID"] = jaccardscores['mainTile'].apply(lambda x: get_episode_from_first_season(df, x))
     
     if DEBUG:

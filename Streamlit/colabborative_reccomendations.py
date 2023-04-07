@@ -156,7 +156,9 @@ def userItemPrediction(df_ratings, simularity_to_other_users, current_user_mean,
     if len(sorted_simularities) < max_neighbourhood:
         neighbours = sorted_simularities
     else:
-        neighbours = sorted_simularities[:max_neighbourhood]
+        print(sorted_simularities.keys())
+        neighbours =  {k: sorted_simularities[k] for k in list(sorted_simularities)[:max_neighbourhood]}
+        #neighbours = sorted_simularities[:max_neighbourhood]
 
     # We only want to make predictions for which we know a rating from other users
     unique_mediaID = df_ratings[df_ratings['user_id'].isin(neighbours.keys())]["content_id"].unique()
