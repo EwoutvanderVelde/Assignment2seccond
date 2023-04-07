@@ -16,4 +16,3 @@ A short explination on each file and the order that it should be ran in if you w
 # TODO when we have more time
 1. Re-run the scaper with the backdrop images scraped. We found that some thumbnails are protected, and you need NPOPlus cookies in your browser to open them.
 2. Tokenise summaries for eacht show, to include this in the search results.
-3. 
